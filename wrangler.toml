@@ -1,10 +1,11 @@
 
 name = "cinewave-ghana"
 main = "worker.js"
-compatibility_date = "2026-10-[assets]
+compatibility_date = "2026-10-27"
 
+[assets]
 directory = "./"
-binding ="ASSETS"
+binding = "ASSETS"
 not_found_handling = "single-page-application"
 run_worker_first = ["/api/*"]
 
@@ -12,4 +13,3 @@ run_worker_first = ["/api/*"]
 binding = "DB"
 database_name = "cinewave-ghana-db"
 database_id = "006bc4cc-e09a-454a-95dc-6be69ec43589"
-
