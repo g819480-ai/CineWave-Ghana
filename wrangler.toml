@@ -7,10 +7,10 @@ directory = "./public"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 
-[[d1_databases]]
-binding = "DB"
-database_name = "cinewave-ghana-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+[["d1_databases": [{
+    "binding": "DB",
+    "database_name": "cinewave-ghana-db",
+    "database_id": "006bc4cc-e09a-454a-95dc-6be69ec43589"
 
 # Configure these as secrets; do not put actual values in this file:
 # npx wrangler secret put ADMIN_PASSWORD
