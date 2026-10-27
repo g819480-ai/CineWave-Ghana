@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0c0a09">
+  <title>CineWave Ghana | Movies & Series</title>
+  <meta name="description" content="Watch authorized movies and series free on CineWave Ghana. No visitor account required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#catalog">Skip to movies</a>
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#home" aria-label="CineWave Ghana home"><span>CINEWAVE</span><small>GHANA</small></a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#home">Home</a><a href="#catalog">Movies</a><a href="#series">Series</a><a href="#my-list">My List</a>
+    </nav>
+    <div class="header-actions">
+      <label class="search-box" for="search"><span data-icon="search" aria-hidden="true"></span><input id="search" type="search" placeholder="Titles, genres, people" autocomplete="off" aria-label="Search movies and series"></label>
+      <a class="admin-link" href="/admin.html" aria-label="Open admin dashboard" title="Admin"><span data-icon="settings" aria-hidden="true"></span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home" aria-labelledby="heroTitle">
+      <div class="hero-backdrop" id="heroBackdrop"></div><div class="hero-grain" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="hero-kicker" id="heroKicker">CINEWAVE GHANA · FREE TO WATCH</p>
+        <h1 id="heroTitle">STORIES THAT<br><em>MOVE YOU.</em></h1>
+        <div class="hero-meta" id="heroMeta"><span>No account</span><span>No subscription</span><span>Just press play</span></div>
+        <p class="hero-description" id="heroDescription">Discover Ghanaian stories, global cinema and unforgettable series. Stream authorized titles free, wherever you are.</p>
+        <div class="hero-actions"><button class="button button-light" id="heroPlay" type="button"><span data-icon="play" aria-hidden="true"></span>Play</button><button class="button button-muted" id="heroInfo" type="button"><span data-icon="info" aria-hidden="true"></span>More info</button></div>
+      </div>
+      <div class="hero-poster-wrap" id="heroPosterWrap" hidden><img id="heroPoster" class="hero-poster" alt="" fetchpriority="high"><span>FEATURED ON CINEWAVE</span></div>
+      <a class="hero-scroll" href="#catalog" aria-label="Browse the catalog"><span>EXPLORE</span><i></i></a>
+    </section>
+
+    <div class="ad-slot ad-banner" id="homeAd" aria-label="Advertisement"><span>Advertisement</span></div>
+    <div class="catalog" id="catalog">
+      <section class="row-section" id="continue-section" hidden><div class="row-heading"><h2>Continue Watching</h2><span>On this device</span></div><div class="rail-wrap"><button class="rail-arrow prev" type="button" data-scroll="continueRail" data-direction="-1" aria-label="Scroll Continue Watching left"><span data-icon="chevron-left"></span></button><div class="rail" id="continueRail"></div><button class="rail-arrow next" type="button" data-scroll="continueRail" data-direction="1" aria-label="Scroll Continue Watching right"><span data-icon="chevron-right"></span></button></div></section>
+      <span id="series" aria-hidden="true"></span><div id="dynamicRows"></div>
+      <section class="row-section" id="my-list"><div class="row-heading"><h2>My List</h2><button class="text-button" id="clearData" type="button">Clear viewing data</button></div><div id="myListContent"></div></section>
+      <section class="search-results" id="searchResults" hidden aria-live="polite"><div class="row-heading"><h2 id="searchHeading">Search results</h2><button class="text-button" id="clearSearch" type="button">Clear search</button></div><div class="all-grid" id="allGrid"></div><p class="empty-state" id="searchEmpty" hidden>No titles match your search. Try a title, genre, creator or year.</p></section>
+    </div>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="#home"><span>CINEWAVE</span><small>GHANA</small></a><p>Free streaming of titles shared by authorized rights holders. No visitor registration, login or profile selection.</p><p>My List and Continue Watching stay in this browser only. Clearing browser data removes them; they do not sync across devices.</p><nav aria-label="Footer navigation"><a href="#catalog">Browse</a><a href="#my-list">My List</a><a href="/admin.html">Rights-holder admin</a></nav><small>Only upload movies you own or are authorized to distribute. Titles and artwork belong to their respective creators.</small></footer>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation"><a href="#home"><span data-icon="home"></span><small>Home</small></a><button id="mobileSearch" type="button"><span data-icon="search"></span><small>Search</small></button><a href="#my-list"><span data-icon="bookmark"></span><small>My List</small></a></nav>
+
+  <dialog class="details-dialog" id="detailsDialog" aria-labelledby="dialogTitle"><div class="details-shell"><button class="icon-button dialog-close" id="detailsClose" type="button" aria-label="Close movie details"><span data-icon="close"></span></button><div class="details-visual" id="detailsVisual"></div><div class="details-body" id="detailsBody"></div></div></dialog>
+  <dialog class="player-dialog" id="playerDialog" aria-labelledby="watchTitle"><div class="player-shell"><div class="player-top"><div><span>NOW PLAYING</span><strong id="watchTitle">CineWave Ghana</strong></div><div class="player-actions"><a class="button button-outline hidden" id="playerDownload" href="/" download><span data-icon="download"></span>Download</a><button class="icon-button" id="playerClose" type="button" aria-label="Close player"><span data-icon="close"></span></button></div></div><div class="watch-frame" id="watchFrame"></div><div class="player-bottom"><div class="subtitle-control" id="subtitleControl" hidden><label for="subtitleLanguage">Subtitles</label><select id="subtitleLanguage"><option value="off">Off</option></select></div><p id="playerHint">Use the video controls to adjust volume, playback and fullscreen.</p></div><div class="ad-slot ad-player" id="playerAd" aria-label="Advertisement"><span>Advertisement</span></div></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/site.js" defer></script>
+</body>
+</html>
