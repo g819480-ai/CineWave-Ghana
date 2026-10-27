@@ -1,1 +1,55 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>CineWave Ghana | Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080808;color:#fff;font:15px Arial,sans-serif}header{padding:20px;background:#151515;border-bottom:2px solid #e50914}h1{font-size:23px;margin:0 0 6px;color:#e50914}main{max-width:760px;margin:25px auto;padding:0 15px}.panel{background:#171717;padding:20px;border-radius:9px;margin-bottom:20px}h2{font-size:19px;margin-top:0}input,select,textarea{width:100%;padding:12px;margin:6px 0 14px;background:#090909;color:white;border:1px solid #555;border-radius:5px}textarea{min-height:95px;resize:vertical}label{font-size:13px;color:#ddd}.check{display:flex;align-items:center;gap:10px;margin:14px 0}.check input{width:19px;margin:0}button,.link{border:0;border-radius:5px;padding:12px 15px;background:#e50914;color:white;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}.secondary{background:#383838}.danger{background:#8c2020}button:disabled{opacity:.5}.movie{padding:15px 0;border-bottom:1px solid #444;overflow-wrap:anywhere}.movie h3{margin:0 0 8px}.small{color:#bbb;font-size:13px;line-height:1.5}.status{padding:12px;margin:12px 0;background:#292929;border-radius:5px;overflow-wrap:anywhere}.hidden{display:none!important}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<header><h1>CineWave Ghana</h1><div>Admin Dashboard</div></header>
+<main>
+<section id="loginPanel" class="panel"><h2>Admin sign in</h2><p class="small">Sign in using your Cloudflare ADMIN_PASSWORD secret.</p><form id="loginForm"><label for="password">Admin password</label><input id="password" type="password" required autocomplete="current-password"><button type="submit">Sign in</button></form></section>
+<section id="dashboard" class="hidden">
+<div class="panel"><h2 id="formTitle">Add a movie</h2><form id="movieForm">
+<label for="title">Movie title *</label><input id="title" required maxlength="180">
+<label for="category">Category *</label><select id="category"><option value="ghana">Ghanaian</option><option value="nollywood">Nollywood</option><option value="hollywood">Hollywood</option><option value="bollywood">Bollywood</option><option value="action">Action</option><option value="comedy">Comedy</option><option value="drama">Drama</option><option value="animation">Animation</option><option value="series">Series</option><option value="kdrama">K-Drama</option><option value="classics">Classics</option><option value="open">Open-Licence Films</option></select>
+<label for="categoryLabel">Category display name</label><input id="categoryLabel" placeholder="e.g. Ghanaian Movies">
+<label for="year">Release year</label><input id="year" type="number" min="1888" max="2100" placeholder="2026">
+<label for="rating">Rating</label><input id="rating" placeholder="PG-13 or NR" value="NR">
+<label for="duration">Duration</label><input id="duration" placeholder="e.g. 1 hr 45 min">
+<label for="creator">Director / creator</label><input id="creator">
+<label for="poster">Poster image URL (HTTPS)</label><input id="poster" type="url" placeholder="https://example.com/poster.jpg">
+<label for="streamType">Video source type *</label><select id="streamType"><option value="not-configured">Not configured</option><option value="mp4">Direct MP4 video</option><option value="embed">Video embed URL</option><option value="archive">Internet Archive identifier</option></select>
+<label for="streamUrl">Video URL (HTTPS, if required)</label><input id="streamUrl" type="url" placeholder="https://...">
+<label for="archiveId">Internet Archive identifier (for Archive films)</label><input id="archiveId" placeholder="e.g. a verified archive item identifier">
+<label for="synopsis">Movie description</label><textarea id="synopsis" placeholder="Write a short description"></textarea>
+<label for="subtitles">Subtitles (JSON array)</label><textarea id="subtitles">[]</textarea>
+<div class="check"><input id="featured" type="checkbox"><label for="featured">Feature this movie on the homepage</label></div>
+<div class="check"><input id="rights" type="checkbox"><label for="rights">I confirm CineWave has permission to stream this movie.</label></div>
+<div class="check"><input id="published" type="checkbox"><label for="published">Publish movie on the website</label></div>
+<button id="saveButton" type="submit">Save movie</button> <button id="cancelButton" type="button" class="secondary hidden">Cancel edit</button></form><div id="status" class="status hidden" role="status"></div></div>
+<div class="panel"><h2>Movie catalogue</h2><button id="refreshButton" type="button" class="secondary">Refresh movies</button><div id="movieList"></div></div>
+<div class="actions"><a class="link secondary" href="/">View website</a><button id="logoutButton" type="button" class="secondary">Sign out</button></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let editingId=null,movies=[];
+function status(message){$("status").textContent=message;$("status").classList.remove("hidden")}
+async function api(path,options={}){const response=await fetch(path,{...options,credentials:"same-origin",headers:{...(options.body?{"Content-Type":"application/json"}:{}),...(options.headers||{})}});let data={};try{data=await response.json()}catch{}if(!response.ok)throw new Error(data.error||"Request failed.");return data}
+function showDashboard(){$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden")}function showLogin(){$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden")}
+async function checkSession(){try{await api("/api/admin/session");showDashboard();await loadMovies()}catch{showLogin()}}
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();try{await api("/api/admin/login",{method:"POST",body:JSON.stringify({password:$("password").value})});$("password").value="";showDashboard();status("Signed in successfully.");await loadMovies()}catch(err){alert(err.message)}});
+function getMovieForm(){let subtitles;try{subtitles=JSON.parse($("subtitles").value||"[]");if(!Array.isArray(subtitles))throw new Error()}catch{throw new Error("Subtitles must be a valid JSON array.")}return{title:$("title").value.trim(),category:$("category").value,category_label:$("categoryLabel").value.trim()||$("category").selectedOptions[0].text,year:$("year").value?Number($("year").value):null,rating:$("rating").value.trim()||"NR",duration:$("duration").value.trim(),creator:$("creator").value.trim(),poster_url:$("poster").value.trim(),stream_type:$("streamType").value,stream_url:$("streamUrl").value.trim(),archive_id:$("archiveId").value.trim(),synopsis:$("synopsis").value.trim(),subtitles,featured:$("featured").checked,rights_verified:$("rights").checked,published:$("published").checked}}
+$("movieForm").addEventListener("submit",async e=>{e.preventDefault();try{const movie=getMovieForm();if(movie.published&&!movie.rights_verified)throw new Error("Confirm streaming rights before publishing.");$("saveButton").disabled=true;if(editingId){await api("/api/admin/movies/"+editingId,{method:"PUT",body:JSON.stringify(movie)});status("Movie updated.")}else{await api("/api/admin/movies",{method:"POST",body:JSON.stringify(movie)});status("Movie saved.")}resetForm();await loadMovies()}catch(err){status(err.message)}finally{$("saveButton").disabled=false}});
+function resetForm(){$("movieForm").reset();editingId=null;$("rating").value="NR";$("subtitles").value="[]";$("formTitle").textContent="Add a movie";$("saveButton").textContent="Save movie";$("cancelButton").classList.add("hidden")}$("cancelButton").onclick=resetForm;
+function safeText(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function loadMovies(){try{const data=await api("/api/admin/movies");movies=data.movies||[];$("movieList").innerHTML=movies.length?movies.map(m=>'<div class="movie"><h3>'+safeText(m.title)+'</h3><div class="small">'+safeText(m.category_label||m.category)+' · '+safeText(m.year||"Year not set")+'<br>Rights verified: '+(m.rights_verified?"Yes":"No")+' · Published: '+(m.published?"Yes":"No")+'</div><div class="actions"><button type="button" class="secondary" data-edit="'+safeText(m.id)+'">Edit</button> <button type="button" class="danger" data-delete="'+safeText(m.id)+'">Delete</button></div></div>').join(""):'<p class="small">No movies saved yet. Add your first movie above.</p>'}catch(err){status(err.message+" Try signing in again.")}}
+$("movieList").addEventListener("click",async e=>{const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");if(edit){const m=movies.find(x=>x.id===edit.dataset.edit);if(!m)return;editingId=m.id;$("title").value=m.title||"";$("category").value=m.category||"open";$("categoryLabel").value=m.category_label||"";$("year").value=m.year||"";$("rating").value=m.rating||"NR";$("duration").value=m.duration||"";$("creator").value=m.creator||"";$("poster").value=m.poster_url||"";$("streamType").value=m.stream_type||"not-configured";$("streamUrl").value=m.stream_url||"";$("archiveId").value=m.archive_id||"";$("synopsis").value=m.synopsis||"";$("subtitles").value=JSON.stringify(m.subtitles||[],null,2);$("featured").checked=!!m.featured;$("rights").checked=!!m.rights_verified;$("published").checked=!!m.published;$("formTitle").textContent="Edit movie";$("saveButton").textContent="Update movie";$("cancelButton").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}if(del){const m=movies.find(x=>x.id===del.dataset.delete);if(!m||!confirm('Delete "'+m.title+'" permanently?'))return;try{await api("/api/admin/movies/"+m.id,{method:"DELETE"});status("Movie deleted.");await loadMovies()}catch(err){status(err.message)}}});
+$("refreshButton").onclick=loadMovies;$("logoutButton").onclick=async()=>{try{await api("/api/admin/logout",{method:"POST"})}catch{}showLogin();resetForm();status("Signed out.")};checkSession();
+</script>
+</body>
+</html>
