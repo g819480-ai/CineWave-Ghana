@@ -1,0 +1,1 @@
+Place only genuine WebVTT subtitle files here if this folder is hosted with your assets. A .vtt file starts with WEBVTT. Upload a separate file per language and enter its HTTPS URL in Admin > Subtitle tracks JSON. The language selector lists tracks actually attached to the video, but some third-party embed players control subtitles themselves.
