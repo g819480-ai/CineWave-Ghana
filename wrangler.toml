@@ -1,6 +1,6 @@
 
 name = "cinewave-ghana"
-main = "Worker.js"
+main = "worker.js"
 compatibility_date = "2026-10-27"
 
 [assets]
