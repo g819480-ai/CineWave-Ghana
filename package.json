@@ -2,7 +2,8 @@
   "name": "cinewave-ghana",
   "version": "2.0.0",
   "private": true,
-  "type": "module",
+  "type": "module", 
+  "packageManager": "npm@11.19.1",
   "description": "CineWave Ghana — Cloudflare Workers, D1 and private R2 movie streaming",
   "scripts": {
     "dev": "wrangler dev",
