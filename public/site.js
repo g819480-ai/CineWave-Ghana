@@ -1,6 +1,5 @@
 // public/site.js
-const NOCTURA_MOVIE_CATALOG = [
-  {
+  { const DEFAULT_FILMS = NOCTURA_MOVIE_CATALOG.filter(item => item.enabled);
     title: 'The General',
     category: 'hollywood',
     year: 1926,
