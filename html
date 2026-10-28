@@ -1,0 +1,31 @@
+<!-- components/VideoPlayer.html / .jsx / .vue -->
+<div class="video-container" id="nocturaPlayerWrapper">
+  <video
+    id="nocturaPlayer"
+    class="noctura-video"
+    controls
+    playsinline
+    webkit-playsinline="true"
+    preload="metadata"
+    poster="${movie.backdropUrl}"
+  >
+    <source src="${movie.videoUrl}" type="${movie.videoFormat}">
+    <!-- Dynamic subtitle tracks -->
+    ${movie.subtitles.map(sub => `
+      <track
+        kind="subtitles"
+        srclang="${sub.lang}"
+        label="${sub.label}"
+        src="${sub.src}"
+        ${sub.default ? 'default' : ''}
+      >
+    `).join('')}
+    Your browser does not support HTML5 video.
+  </video>
+
+  <!-- Player Error Overlay -->
+  <div id="playerErrorMessage" class="player-error hidden" role="alert">
+    <p>This stream is currently unavailable or your device cannot decode this format.</p>
+    <button onclick="retryPlayback()">Retry</button>
+  </div>
+</div>
