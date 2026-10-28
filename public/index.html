@@ -1,114 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOCTURA | Licensed Classic Cinema</title>
-  <link rel="stylesheet" href="/css/main.css">
-</head>
-<body>
-  <header class="navbar" id="navbar">
-    <a href="/index.html" class="brand-logo">NOCTURA</a>
+// script.js (or catalogue.js)
 
-    <ul class="nav-links">
-      <li><a href="#" class="nav-link active">Home</a></li>
-      <li><a href="#" class="nav-link">Movies</a></li>
-      <li><a href="#" class="nav-link">Ghanaian</a></li>
-      <li><a href="#" class="nav-link">Hollywood</a></li>
-      <li><a href="#" class="nav-link">Bollywood</a></li>
-      <li><a href="#" class="nav-link">K-Drama</a></li>
-      <li><a href="#watchlist-section" class="nav-link">My List</a></li>
-    </ul>
+// 1. Fetch the data file you pushed to GitHub
+async function loadNocturaCatalogue() {
+  try {
+    const response = await fetch('./data/movies.json'); // path to your movies.json
+    if (!response.ok) throw new Error('Failed to load catalogue');
+    const movies = await response.json();
 
-    <div class="nav-actions">
-      <div class="search-wrapper">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Titles, actors, genres..." autocomplete="off">
-        <div id="searchResults" class="search-results-dropdown"></div>
-      </div>
-      <a href="/admin.html" class="nav-link" title="Admin CMS">⚙️</a>
+    renderCategories(movies);
+    setupSearch(movies);
+  } catch (error) {
+    console.error('Catalogue error:', error);
+  }
+}
+
+// 2. Group movies by category and render them into your existing containers
+function renderCategories(movies) {
+  // Map your categories to the container IDs already in your HTML
+  const categories = {
+    'ghanaian-african': document.getElementById('african-grid'),
+    'hollywood-action': document.getElementById('hollywood-grid'),
+    'bollywood': document.getElementById('bollywood-grid'),
+    'kdrama': document.getElementById('kdrama-grid'),
+    'international': document.getElementById('international-grid')
+  };
+
+  movies.forEach(movie => {
+    const container = categories[movie.category];
+    if (container) {
+      const card = createMovieCard(movie);
+      container.appendChild(card);
+    }
+  });
+}
+
+// 3. Create the movie card preserving your existing CSS classes
+function createMovieCard(movie) {
+  const card = document.createElement('div');
+  card.className = 'movie-card'; // Use your existing card class
+
+  card.innerHTML = `
+    <div class="poster-wrapper">
+      <img src="${movie.posterUrl}" alt="${movie.title}" loading="lazy" />
+      <span class="badge-rights">${movie.rightsStatus}</span>
     </div>
-  </header>
-
-  <section class="hero" id="heroBillboard">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <span class="hero-badge" id="heroBadge">Featured Premiere</span>
-      <h1 class="hero-title" id="heroTitle">Loading...</h1>
-
-      <div class="hero-meta" id="heroMeta">
-        <span id="heroYear">----</span>
-        <span id="heroRating">--</span>
-        <span id="heroDuration">--</span>
-      </div>
-
-      <p class="hero-desc" id="heroDesc">Loading featured movie metadata...</p>
-
-      <div class="hero-buttons">
-        <a href="#" id="heroPlayBtn" class="btn btn-primary">▶ Play Now</a>
-        <button id="heroDetailsBtn" class="btn btn-secondary" type="button">ℹ More Info</button>
-      </div>
+    <div class="movie-info">
+      <h3 class="movie-title">${movie.title}</h3>
+      <span class="movie-year">${movie.year}</span>
     </div>
-  </section>
+  `;
 
-  <div class="filter-bar">
-    <select id="filterIndustry" class="filter-select" onchange="applyFilters()">
-      <option value="all">All Industries</option>
-      <option value="Ghanaian Cinema">Ghanaian & Kumawood</option>
-      <option value="Nollywood">Nollywood</option>
-      <option value="Hollywood">Hollywood</option>
-      <option value="K-Drama">Korean Drama</option>
-    </select>
+  // Navigate to player or open player modal on click
+  card.addEventListener('click', () => {
+    // Option A: If you use a separate watch page:
+    window.location.href = `watch.html?id=${movie.id}`;
 
-    <select id="filterGenre" class="filter-select" onchange="applyFilters()">
-      <option value="all">All Genres</option>
-      <option value="Drama">Drama</option>
-      <option value="Comedy">Comedy</option>
-      <option value="Romance">Romance</option>
-      <option value="Action">Action</option>
-      <option value="Sci-Fi">Sci-Fi</option>
-      <option value="Fantasy">Fantasy</option>
-      <option value="Adventure">Adventure</option>
-      <option value="Horror">Horror</option>
-    </select>
-  </div>
+    // Option B: If you use an inline modal player:
+    // openPlayerModal(movie);
+  });
 
-  <section class="catalog-section" id="continue-section" style="display: none;">
-    <div class="section-title">Continue Watching</div>
-    <div class="media-row" id="continueRow"></div>
-  </section>
+  return card;
+}
 
-  <section class="catalog-section" id="watchlist-section" style="display: none;">
-    <div class="section-title">My List</div>
-    <div class="media-row" id="watchlistRow"></div>
-  </section>
-
-  <section class="catalog-section">
-    <div class="section-title">Spotlight: Classic & International Cinema</div>
-    <div class="media-row" id="ghanaianRow"></div>
-  </section>
-
-  <section class="catalog-section">
-    <div class="section-title" id="catalogueHeading">Trending Releases</div>
-    <div class="media-row" id="generalRow"></div>
-  </section>
-
-  <div class="modal-backdrop" id="infoModal">
-    <div class="modal-body">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-  </div>
-
-  <footer>
-    <div class="footer-links">
-      <a href="/legal.html#dmca">DMCA & Copyright</a>
-      <a href="/legal.html#terms">Terms of Service</a>
-      <a href="/legal.html#privacy">Privacy Policy</a>
-    </div>
-    <p>&copy; 2026 NOCTURA. Licensed classic archive & review catalog.</p>
-  </footer>
-
-  <script src="/public/licensed_catalog.js"></script>
-  <script src="/public/site.js"></script>
-</body>
-</html>
+document.addEventListener('DOMContentLoaded', loadNocturaCatalogue);
