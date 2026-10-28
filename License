@@ -1,0 +1,4 @@
+mkdir -p NOCTURA_Licensed_Movie_Collection/videos
+touch NOCTURA_Licensed_Movie_Collection/videos/.gitkeep
+
+python3 NOCTURA_Licensed_Movie_Collection/create_zip.py
