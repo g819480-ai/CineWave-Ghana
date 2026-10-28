@@ -23,6 +23,7 @@
       <a class="admin-link" href="/admin/login" aria-label="Open admin dashboard" title="Admin"><span data-icon="settings" aria-hidden="true"></span></a>
     </div>
   </header>
+
   <main>
     <section class="hero" id="home" aria-labelledby="heroTitle">
       <div class="hero-backdrop" id="heroBackdrop"></div><div class="hero-grain" aria-hidden="true"></div>
@@ -31,23 +32,113 @@
         <h1 id="heroTitle">STORIES THAT<br><em>MOVE YOU.</em></h1>
         <div class="hero-meta" id="heroMeta"><span>No account</span><span>No subscription</span><span>Just press play</span></div>
         <p class="hero-description" id="heroDescription">Discover Ghanaian stories, global cinema and unforgettable series. Stream authorized titles free, wherever you are.</p>
-        <div class="hero-actions"><button class="button button-light" id="heroPlay" type="button"><span data-icon="play" aria-hidden="true"></span>Play</button><button class="button button-muted" id="heroInfo" type="button"><span data-icon="info" aria-hidden="true"></span>More Info</button></div>
+        <div class="hero-actions">
+          <button class="button button-light" id="heroPlay" type="button"><span data-icon="play" aria-hidden="true"></span>Play</button>
+          <button class="button button-muted" id="heroInfo" type="button"><span data-icon="info" aria-hidden="true"></span>More Info</button>
+        </div>
       </div>
       <div class="hero-poster-wrap" id="heroPosterWrap" hidden><img id="heroPoster" class="hero-poster" alt="" fetchpriority="high"><span>FEATURED ON CINEWAVE</span></div>
       <a class="hero-scroll" href="#catalog" aria-label="Browse the catalog"><span>EXPLORE</span><i></i></a>
     </section>
+
+    <section class="spotlight-strip" aria-label="Platform highlights">
+      <article class="spotlight-card">
+        <span class="spotlight-eyebrow">Unlimited access</span>
+        <h3>Free for everyone</h3>
+        <p>No sign-up, no subscription, no profile wall.</p>
+      </article>
+      <article class="spotlight-card">
+        <span class="spotlight-eyebrow">Curated picks</span>
+        <h3>Premium storytelling</h3>
+        <p>Ghana, Nollywood, Bollywood and international cinema.</p>
+      </article>
+      <article class="spotlight-card">
+        <span class="spotlight-eyebrow">Smart viewing</span>
+        <h3>Watch later</h3>
+        <p>Resume from where you left off on this device.</p>
+      </article>
+    </section>
+
+    <section class="discover-panel" aria-label="Browse catalog filters">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow-small">Browse</p>
+          <h2>Find your next watch</h2>
+        </div>
+        <div class="view-toggle" aria-label="View mode toggle">
+          <button class="toggle-btn is-active" type="button" data-view="wide">Wide</button>
+          <button class="toggle-btn" type="button" data-view="compact">Compact</button>
+        </div>
+      </div>
+      <div class="category-strip" id="categoryStrip"></div>
+    </section>
+
     <div class="ad-slot ad-banner" id="homeAd" aria-label="Advertisement"><span>Advertisement</span></div>
+
     <div class="catalog" id="catalog">
-      <section class="row-section" id="continue-section" hidden><div class="row-heading"><h2>Continue Watching</h2><span>On this device</span></div><div class="rail-wrap" id="continueRail"></div></section>
-      <span id="series" aria-hidden="true"></span><div id="dynamicRows"></div>
-      <section class="row-section" id="my-list"><div class="row-heading"><h2>My List</h2><button class="text-button" id="clearData" type="button">Clear viewing data</button></div><div id="myListContent"></div></section>
-      <section class="search-results" id="searchResults" hidden aria-live="polite"><div class="row-heading"><h2 id="searchHeading">Search results</h2><button class="text-button" id="clearSearch" type="button">Clear search</button></div><div id="searchRail"></div></section>
+      <section class="row-section" id="continue-section" hidden>
+        <div class="row-heading"><h2>Continue Watching</h2><span>On this device</span></div>
+        <div class="rail-wrap" id="continueRail"></div>
+      </section>
+      <span id="series" aria-hidden="true"></span>
+      <div id="dynamicRows"></div>
+      <section class="row-section" id="my-list">
+        <div class="row-heading"><h2>My List</h2><button class="text-button" id="clearData" type="button">Clear viewing data</button></div>
+        <div id="myListContent"></div>
+      </section>
+      <section class="search-results" id="searchResults" hidden aria-live="polite">
+        <div class="row-heading"><h2 id="searchHeading">Search results</h2><button class="text-button" id="clearSearch" type="button">Clear search</button></div>
+        <div id="searchRail"></div>
+      </section>
     </div>
   </main>
-  <footer class="site-footer"><a class="brand footer-brand" href="#home"><span>CINEWAVE</span><small>GHANA</small></a><p>Free streaming of titles shared by authorized rights holders. No visitor registration required.</p></footer>
-  <nav class="mobile-nav" aria-label="Mobile navigation"><a href="#home"><span data-icon="home"></span><small>Home</small></a><button id="mobileSearch" type="button"><span data-icon="search"></span><small>Search</small></button><a href="#my-list"><span data-icon="bookmark"></span><small>My List</small></a></nav>
-  <dialog class="details-dialog" id="detailsDialog" aria-labelledby="dialogTitle"><div class="details-shell"><button class="icon-button dialog-close" id="detailsClose" type="button" aria-label="Close details">×</button><div class="details-visual" id="detailsVisual"></div><div class="details-copy"><p class="eyebrow-small">NOW STREAMING</p><h3 id="dialogTitle">Movie title</h3><div class="details-meta" id="detailsMeta"></div><p id="detailsDescription"></p><div class="details-actions"><button class="button button-light" id="detailsPlay" type="button"><span data-icon="play" aria-hidden="true"></span>Play</button><button class="button button-muted" id="detailsList" type="button"><span data-icon="plus" aria-hidden="true"></span>Add to My List</button></div><div class="details-grid" id="detailsGrid"></div></div></div></dialog>
-  <dialog class="player-dialog" id="playerDialog" aria-labelledby="watchTitle"><div class="player-shell"><div class="player-top"><div><span>NOW PLAYING</span><strong id="watchTitle">CineWave Ghana</strong></div><button class="icon-button dialog-close" id="playerClose" type="button" aria-label="Close player">×</button></div><div class="watch-frame" id="watchFrame"></div><div class="player-controls"><label for="subtitleLanguage">Subtitles</label><select id="subtitleLanguage"><option value="off">Off</option><option value="en">English</option></select></div></div></dialog>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#home"><span>CINEWAVE</span><small>GHANA</small></a>
+    <p>Free streaming of titles shared by authorized rights holders. No visitor registration required.</p>
+    <div class="footer-actions">
+      <button class="button button-muted" type="button" id="newsletterButton">Get alerts for new releases</button>
+    </div>
+  </footer>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a href="#home"><span data-icon="home"></span><small>Home</small></a>
+    <button id="mobileSearch" type="button"><span data-icon="search"></span><small>Search</small></button>
+    <a href="#my-list"><span data-icon="bookmark"></span><small>My List</small></a>
+  </nav>
+
+  <dialog class="details-dialog" id="detailsDialog" aria-labelledby="dialogTitle">
+    <div class="details-shell">
+      <button class="icon-button dialog-close" id="detailsClose" type="button" aria-label="Close details">×</button>
+      <div class="details-visual" id="detailsVisual"></div>
+      <div class="details-copy">
+        <p class="eyebrow-small">NOW STREAMING</p>
+        <h3 id="dialogTitle">Movie title</h3>
+        <div class="details-meta" id="detailsMeta"></div>
+        <p id="detailsDescription"></p>
+        <div class="details-actions">
+          <button class="button button-light" id="detailsPlay" type="button"><span data-icon="play" aria-hidden="true"></span>Play</button>
+          <button class="button button-muted" id="detailsList" type="button"><span data-icon="plus" aria-hidden="true"></span>My List</button>
+        </div>
+        <div class="details-grid" id="detailsGrid"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="player-dialog" id="playerDialog" aria-labelledby="watchTitle">
+    <div class="player-shell">
+      <div class="player-top">
+        <div><span>NOW PLAYING</span><strong id="watchTitle">CineWave Ghana</strong></div>
+        <button class="icon-button dialog-close" id="playerClose" type="button" aria-label="Close player">×</button>
+      </div>
+      <div class="watch-frame" id="watchFrame"></div>
+      <div class="player-controls">
+        <label for="subtitleLanguage">Subtitles</label>
+        <select id="subtitleLanguage"><option value="off">Off</option><option value="en">English</option></select>
+      </div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/site.js" defer></script>
 </body>
