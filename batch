@@ -1,0 +1,85 @@
+  "id": "charade-1963",
+    "title": "Charade",
+    "year": 1963,
+    "category": "hollywood-action",
+    "synopsis": "A woman is pursued in Paris by several men who want a fortune her murdered husband had stolen, while a charming stranger offers his help.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Charade_1963_poster.jpg",
+    "backdropUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Cary_Grant_and_Audrey_Hepburn_in_Charade_trailer.jpg/1280px-Cary_Grant_and_Audrey_Hepburn_in_Charade_trailer.jpg",
+    "videoUrl": "https://ia800305.us.archive.org/30/items/Charade1963_201704/Charade%20%281963%29.mp4",
+    "videoFormat": "video/mp4",
+    "subtitles": [
+      {
+        "lang": "en",
+        "label": "English",
+        "src": "https://ia800305.us.archive.org/30/items/Charade1963_201704/Charade%20%281963%29.vtt",
+        "default": true
+      }
+    ],
+    "rightsStatus": "Public Domain",
+    "licenceSourceUrl": "https://archive.org/details/Charade1963_201704",
+    "attributionRequirements": "Universal Pictures (1963). Released into the public domain in the United States upon initial release due to defective copyright notice pursuant to US Copyright Act of 1909.",
+    "verificationNotes": "Verified US Public Domain due to omission of proper copyright notice in initial theatrical distribution prints."
+  },
+  {
+    "id": "night-of-the-living-dead-1968",
+    "title": "Night of the Living Dead",
+    "year": 1968,
+    "category": "hollywood-action",
+    "synopsis": "A group of Pennsylvania residents must barricade themselves in a farmhouse against a horde of reanimated flesh-eating ghouls.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/1/18/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
+    "backdropUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Night_of_the_Living_Dead_trailer_screenshot_%286%29.jpg/1280px-Night_of_the_Living_Dead_trailer_screenshot_%286%29.jpg",
+    "videoUrl": "https://ia800301.us.archive.org/17/items/night_of_the_living_dead/night_of_the_living_dead_512kb.mp4",
+    "videoFormat": "video/mp4",
+    "subtitles": [
+      {
+        "lang": "en",
+        "label": "English",
+        "src": "https://ia800301.us.archive.org/17/items/night_of_the_living_dead/night_of_the_living_dead.vtt",
+        "default": true
+      }
+    ],
+    "rightsStatus": "Public Domain",
+    "licenceSourceUrl": "https://archive.org/details/night_of_the_living_dead",
+    "attributionRequirements": "Directed by George A. Romero. Walter Reade Organization / Image Ten.",
+    "verificationNotes": "Entered US public domain immediately upon release because distributor changed the title and omitted the mandatory copyright notice from the theatrical prints."
+  },
+  {
+    "id": "sita-sings-the-blues-2008",
+    "title": "Sita Sings the Blues",
+    "year": 2008,
+    "category": "international",
+    "synopsis": "An animated biographical and mythic retelling of the Indian epic Ramayana alongside 1920s jazz songs by Annette Hanshaw.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Sita_sings_the_blues_poster.jpg",
+    "backdropUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Sita_sings_the_blues_still.png/1280px-Sita_sings_the_blues_still.png",
+    "videoUrl": "https://ia800303.us.archive.org/30/items/Sita_Sings_the_Blues_720/Sita_Sings_the_Blues_720.mp4",
+    "videoFormat": "video/mp4",
+    "subtitles": [
+      {
+        "lang": "en",
+        "label": "English",
+        "src": "https://ia800303.us.archive.org/30/items/Sita_Sings_the_Blues_720/Sita_Sings_the_Blues.vtt",
+        "default": true
+      }
+    ],
+    "rightsStatus": "Creative Commons CC-BY",
+    "licenceSourceUrl": "https://archive.org/details/Sita_Sings_the_Blues_720",
+    "attributionRequirements": "Created by Nina Paley (2008). Dedicated to the Public Domain under CC0 / CC-BY-SA.",
+    "verificationNotes": "Creator Nina Paley officially placed the complete master film under Creative Commons / Public Domain."
+  },
+  {
+    "id": "tears-of-steel-2012",
+    "title": "Tears of Steel",
+    "year": 2012,
+    "category": "hollywood-action",
+    "synopsis": "In a dystopian Amsterdam, a group of scientists and warriors work to save the world from an onslaught of rogue cybernetic robots.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Tears_of_Steel_poster.jpg/800px-Tears_of_Steel_poster.jpg",
+    "backdropUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Tears_of_Steel_still_bridge.jpg/1280px-Tears_of_Steel_still_bridge.jpg",
+    "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+    "videoFormat": "video/mp4",
+    "subtitles": [],
+    "rightsStatus": "Creative Commons CC-BY",
+    "licenceSourceUrl": "https://mango.blender.org/sharing/",
+    "attributionRequirements": "Blender Foundation | mango.blender.org (CC-BY 3.0 Blender Foundation)",
+    "verificationNotes": "Commercial distribution permitted worldwide under CC-BY with attribution."
+  }
+]
