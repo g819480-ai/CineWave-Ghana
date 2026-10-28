@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch | StreamHub</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/player.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+</head>
+<body class="player-page">
+  <header class="player-header">
+    <a href="/index.html" class="player-back-link">← Return to Browse</a>
+    <div id="nowPlayingTitle" style="font-weight:600; font-size:0.95rem;">Loading Media...</div>
+    <div></div>
+  </header>
+
+  <main>
+    <div class="player-stage" id="playerStage">
+      <video id="custom-video" controls playsinline controlslist="nodownload" style="display:none;"></video>
+      <iframe id="iframe-player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:none;"></iframe>
+      <button id="skipIntroBtn" class="skip-intro-btn" onclick="skipIntro()">Skip Intro ⏭</button>
+      <div id="playerError" class="player-error">
+        <h3>Playback Unavailable</h3>
+        <p id="playerErrorMessage">The stream could not be loaded.</p>
+        <button class="btn btn-secondary" onclick="location.reload()">Retry</button>
+      </div>
+    </div>
+
+    <div class="watch-sidebar" id="seriesSidebar" style="display: none;">
+      <div class="watch-info-bar">
+        <div>
+          <h2 id="mediaTitle">Series Title</h2>
+          <p id="mediaDesc" style="color:#aaa; font-size:0.9rem; margin-top:4px;">Description</p>
+        </div>
+        <select id="seasonSelector" class="season-selector" onchange="changeSeason()"></select>
+      </div>
+      <h3 style="margin-bottom:14px; font-size:1.1rem;">Episodes</h3>
+      <div class="episodes-grid" id="episodesList"></div>
+    </div>
+  </main>
+  <script src="/js/player.js"></script>
+</body>
+</html>

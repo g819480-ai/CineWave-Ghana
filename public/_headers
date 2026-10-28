@@ -1,0 +1,11 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/*.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=60
+
+/*.m3u8
+  Access-Control-Allow-Origin: *
+  Cache-Control: no-cache

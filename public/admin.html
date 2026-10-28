@@ -1,11 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=/admin/login">
-  <title>Redirecting to admin login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Studio | StreamHub</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .admin-container { max-width: 900px; margin: 90px auto; padding: 24px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; color: #aaa; }
+    .form-control { width: 100%; padding: 10px; background: #1c1d22; border: 1px solid #333; color: #fff; border-radius: 4px; }
+    .row { display: flex; gap: 14px; }
+    .col { flex: 1; }
+  </style>
 </head>
 <body>
-  <p>Redirecting to the admin login page…</p>
+  <header class="navbar">
+    <a href="/index.html" class="brand-logo">STREAM<span>CMS</span></a>
+    <a href="/index.html" class="nav-link">← Return to Site</a>
+  </header>
+
+  <div class="admin-container" id="authGate">
+    <h2>Admin Authorization</h2>
+    <p style="color:#888; margin-bottom:12px;">Enter administrative access key:</p>
+    <input type="password" id="adminKeyInput" class="form-control" style="max-width:280px; margin-bottom:12px;" value="admin2026">
+    <button class="btn btn-primary" onclick="verifyAuth()">Unlock CMS</button>
+  </div>
+
+  <div class="admin-container" id="adminDashboard" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2>Catalogue Manager</h2>
+      <button class="btn btn-primary" onclick="exportCatalogueJSON()">⬇ Export catalogue.json</button>
+    </div>
+
+    <div style="background:#141418; padding:20px; border-radius:8px; border:1px solid #27272a; margin-bottom:24px;">
+      <h3 style="margin-bottom:14px;">Add Title</h3>
+      <div class="row">
+        <div class="col form-group"><label>Unique ID</label><input type="text" id="m_id" class="form-control" placeholder="gh-film-title"></div>
+        <div class="col form-group"><label>Title</label><input type="text" id="m_title" class="form-control"></div>
+        <div class="col form-group">
+          <label>Type</label>
+          <select id="m_type" class="form-control"><option value="movie">Movie</option><option value="series">Series</option></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col form-group">
+          <label>Industry</label>
+          <select id="m_industry" class="form-control">
+            <option value="Ghanaian Cinema">Ghanaian Cinema</option>
+            <option value="Nollywood">Nollywood</option>
+            <option value="Hollywood">Hollywood</option>
+            <option value="K-Drama">K-Drama</option>
+          </select>
+        </div>
+        <div class="col form-group"><label>Year</label><input type="number" id="m_year" class="form-control" value="2024"></div>
+        <div class="col form-group">
+          <label>Source Type</label>
+          <select id="m_sourceType" class="form-control">
+            <option value="youtube">YouTube Embed</option>
+            <option value="mp4">Direct MP4</option>
+            <option value="hls">HLS / M3U8</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Stream / Embed URL</label><input type="text" id="m_streamUrl" class="form-control"></div>
+      <div class="form-group"><label>Poster URL</label><input type="text" id="m_poster" class="form-control"></div>
+      <div class="form-group"><label>Synopsis</label><textarea id="m_synopsis" class="form-control" rows="2"></textarea></div>
+      <div class="form-group"><label>Cast (comma separated)</label><input type="text" id="m_cast" class="form-control" placeholder="Kyekyeku, Ras Nene"></div>
+      <button class="btn btn-primary" onclick="addMediaItem()">+ Add to Active List</button>
+    </div>
+
+    <h3>Current Titles</h3>
+    <div id="adminItemList" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+  <script src="/js/admin.js"></script>
 </body>
 </html>
