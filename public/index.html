@@ -1,26 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StreamHub | Ghanaian, Nollywood & Global Cinema</title>
-  <link rel="stylesheet" href="/css/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOCTURA | Licensed Classic Cinema</title>
+  <meta name="description" content="Premium movie-streaming front-end prototype with licensed classic catalog." />
+  <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
   <header class="navbar" id="navbar">
-    <a href="/index.html" class="brand-logo">STREAM<span>HUB</span></a>
+    <a href="/index.html" class="brand-logo">NOCTURA</a>
+
     <ul class="nav-links">
-      <li><a href="#" class="nav-link active" onclick="filterByIndustry('all')">Home</a></li>
-      <li><a href="#" class="nav-link" onclick="filterByIndustry('Ghanaian Cinema')">Ghanaian</a></li>
-      <li><a href="#" class="nav-link" onclick="filterByIndustry('Nollywood')">Nollywood</a></li>
-      <li><a href="#" class="nav-link" onclick="filterByIndustry('Hollywood')">Hollywood</a></li>
-      <li><a href="#" class="nav-link" onclick="filterByIndustry('K-Drama')">K-Drama</a></li>
+      <li><a href="#" class="nav-link active">Home</a></li>
+      <li><a href="#" class="nav-link">Movies</a></li>
+      <li><a href="#" class="nav-link">Ghanaian</a></li>
+      <li><a href="#" class="nav-link">Hollywood</a></li>
+      <li><a href="#" class="nav-link">Bollywood</a></li>
+      <li><a href="#" class="nav-link">K-Drama</a></li>
       <li><a href="#watchlist-section" class="nav-link">My List</a></li>
     </ul>
+
     <div class="nav-actions">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Titles, actors, genres..." autocomplete="off">
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Titles, actors, genres..."
+          autocomplete="off"
+        />
         <div id="searchResults" class="search-results-dropdown"></div>
       </div>
       <a href="/admin.html" class="nav-link" title="Admin CMS">⚙️</a>
@@ -32,15 +42,18 @@
     <div class="hero-content">
       <span class="hero-badge" id="heroBadge">Featured Premiere</span>
       <h1 class="hero-title" id="heroTitle">Loading...</h1>
+
       <div class="hero-meta" id="heroMeta">
         <span id="heroYear">----</span>
         <span id="heroRating">--</span>
         <span id="heroDuration">--</span>
       </div>
+
       <p class="hero-desc" id="heroDesc">Loading featured movie metadata...</p>
+
       <div class="hero-buttons">
         <a href="#" id="heroPlayBtn" class="btn btn-primary">▶ Play Now</a>
-        <button id="heroDetailsBtn" class="btn btn-secondary">ℹ More Info</button>
+        <button id="heroDetailsBtn" class="btn btn-secondary" type="button">ℹ More Info</button>
       </div>
     </div>
   </section>
@@ -53,11 +66,17 @@
       <option value="Hollywood">Hollywood</option>
       <option value="K-Drama">Korean Drama</option>
     </select>
+
     <select id="filterGenre" class="filter-select" onchange="applyFilters()">
       <option value="all">All Genres</option>
       <option value="Drama">Drama</option>
       <option value="Comedy">Comedy</option>
       <option value="Romance">Romance</option>
+      <option value="Action">Action</option>
+      <option value="Sci-Fi">Sci-Fi</option>
+      <option value="Fantasy">Fantasy</option>
+      <option value="Adventure">Adventure</option>
+      <option value="Horror">Horror</option>
     </select>
   </div>
 
@@ -72,7 +91,7 @@
   </section>
 
   <section class="catalog-section">
-    <div class="section-title">Spotlight: Ghanaian Cinema & Kumawood</div>
+    <div class="section-title">Spotlight: Classic & International Cinema</div>
     <div class="media-row" id="ghanaianRow"></div>
   </section>
 
@@ -94,8 +113,10 @@
       <a href="/legal.html#terms">Terms of Service</a>
       <a href="/legal.html#privacy">Privacy Policy</a>
     </div>
-    <p>&copy; 2026 StreamHub. Authorized streaming CDN & Permitted Embeds.</p>
+    <p>&copy; 2026 NOCTURA. Licensed classic archive & review catalog.</p>
   </footer>
-  <script src="/js/app.js"></script>
+
+  <script src="/public/licensed_catalog.js"></script>
+  <script src="/public/site.js"></script>
 </body>
 </html>
