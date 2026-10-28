@@ -1,0 +1,9 @@
+# Check status of modified files
+git status
+
+# Commit only authorized changes
+git add src/data/movies.json src/components/Player.js
+git commit -m "feat(catalogue): add authorized movies and harden HTML5 video player error handling"
+
+# Push branch for PR review
+git push -u origin feature/authorized-movie-catalogue
