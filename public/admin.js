@@ -1,35 +1,352 @@
-const $=id=>document.getElementById(id);
-let editingId=null,movies=[],currentPosterKey='',currentVideoKey='',newSessions=[],saving=false,toastTimer;
-const languages=[['en','English'],['tw','Twi'],['ak','Akan'],['gaa','Ga'],['ee','Ewe'],['dag','Dagbani'],['fr','French'],['sw','Swahili'],['yo','Yoruba'],['ha','Hausa'],['pt','Portuguese'],['es','Spanish'],['hi','Hindi'],['ko','Korean'],['zh','Chinese'],['ar','Arabic']];
-function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function showToast(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').classList.add('show');toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3200)}
-function status(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);$('status').classList.remove('hidden')}
-async function api(path,options={}){const response=await fetch(path,{...options,credentials:'same-origin',headers:{...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});let data={};try{data=await response.json()}catch{}if(!response.ok)throw new Error(data.error||data.warning||'Request failed.');return data}
-function showDashboard(){$('loginPanel').classList.add('hidden');$('dashboard').classList.remove('hidden');$('logoutButton').classList.remove('hidden')}
-function showLogin(){$('dashboard').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('logoutButton').classList.add('hidden')}
-async function checkSession(){try{const session=await api('/api/admin/session');if(!session.authenticated){showLogin();return}showDashboard();await Promise.all([loadMovies(),loadAds()])}catch{showLogin()}}
-$('loginForm').addEventListener('submit',async event=>{event.preventDefault();$('loginButton').disabled=true;$('loginStatus').classList.add('hidden');try{await api('/api/admin/login',{method:'POST',body:JSON.stringify({password:$('password').value})});$('password').value='';showDashboard();status('Signed in securely. Your existing admin session is active.');await Promise.all([loadMovies(),loadAds()])}catch(error){$('loginStatus').textContent=error.message;$('loginStatus').classList.remove('hidden')}finally{$('loginButton').disabled=false}});
-function updateSourceFields(){const type=$('streamType').value;$('r2Fields').hidden=type!=='r2';$('archiveField').hidden=type!=='archive';$('streamUrlField').hidden=!['mp4','embed'].includes(type)}
-$('streamType').addEventListener('change',updateSourceFields);
-function renderCurrentFile(kind){const isPoster=kind==='poster',element=$(isPoster?'currentPoster':'currentVideo'),key=isPoster?currentPosterKey:currentVideoKey;element.classList.toggle('hidden',!key);if(!key){element.innerHTML='';return}element.innerHTML=`<span>Uploaded ${kind} selected. It will be stored in private R2 when saved.</span><button type="button">Remove</button>`;element.querySelector('button').onclick=async()=>{await discardNewUpload(key);if(isPoster)currentPosterKey='';else currentVideoKey='';renderCurrentFile(kind)}}
-async function discardNewUpload(key){const index=newSessions.findIndex(session=>session.key===key);if(index<0)return;const [session]=newSessions.splice(index,1);try{await api('/api/admin/uploads/'+session.id,{method:'DELETE'})}catch(error){showToast(error.message);newSessions.splice(index,0,session)}}
-function addSubtitleRow(track={}){const row=document.createElement('div');row.className='subtitle-row';row.dataset.trackId=track.id||crypto.randomUUID();row.dataset.existingKey=track.key||'';row.dataset.existingUrl=track.url||'';const options=languages.map(([code,label])=>`<option value="${code}" ${code===(track.lang||'en')?'selected':''}>${label}</option>`).join('');row.innerHTML=`<button class="subtitle-remove" type="button" aria-label="Remove subtitle track">×</button><div><label>Language</label><select class="subtitle-lang">${options}</select></div><div><label>Display label</label><input class="subtitle-label" maxlength="60" value="${esc(track.label||'')}" placeholder="English"></div><div class="file"><label>Upload .vtt · max 5 MiB</label><input class="subtitle-file" type="file" accept="text/vtt,.vtt"></div><div class="external"><label>Or external WebVTT URL (HTTPS)</label><input class="subtitle-url" type="url" value="${esc(track.url||'')}" placeholder="https://example.com/subtitles.vtt"><small>${track.key?'An uploaded track is currently attached. Choose a new file to replace it.':track.url?'An external track is currently attached.':''}</small></div>`;$('subtitleRows').appendChild(row);const lang=row.querySelector('.subtitle-lang'),label=row.querySelector('.subtitle-label');if(!label.value)label.value=lang.selectedOptions[0].text;lang.addEventListener('change',()=>{if(!label.value.trim()||languages.some(([code,name])=>name===label.value&&code!==lang.value))label.value=lang.selectedOptions[0].text});row.querySelector('.subtitle-remove').onclick=async()=>{const file=row.querySelector('.subtitle-file').files[0];if(!file)await discardNewUpload(row.dataset.existingKey);row.remove()}}
-$('addSubtitle').onclick=()=>addSubtitleRow();
-function uploadProgress(label,percent,detail=''){$('uploadProgress').classList.remove('hidden');$('uploadLabel').textContent=label;$('uploadPercent').textContent=Math.round(percent)+'%';$('uploadBar').value=percent;$('uploadDetail').textContent=detail}
-function formatBytes(bytes){if(bytes<1024**2)return Math.ceil(bytes/1024)+' KiB';if(bytes<1024**3)return (bytes/1024**2).toFixed(1)+' MiB';return (bytes/1024**3).toFixed(2)+' GiB'}
-async function uploadPart(session,partNumber,blob){let lastError;for(let attempt=0;attempt<3;attempt++){try{const response=await fetch(`/api/admin/uploads/${session.id}/${partNumber}`,{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/octet-stream'},body:blob});const data=await response.json();if(!response.ok)throw new Error(data.error||'Upload part failed.');return data}catch(error){lastError=error;if(attempt<2)await new Promise(resolve=>setTimeout(resolve,600*(attempt+1)))}}throw lastError}
-async function uploadFile(file,kind){const max=kind==='video'?20*1024**3:kind==='poster'?10*1024**2:5*1024**2;if(!file||file.size<1||file.size>max)throw new Error(`${file.name} is empty or exceeds the ${formatBytes(max)} limit.`);const session=await api('/api/admin/uploads/start',{method:'POST',body:JSON.stringify({kind,filename:file.name,size:file.size,type:file.type})});newSessions.push({id:session.id,key:session.key});try{const parts=[];for(let index=0;index<session.part_count;index++){const start=index*session.chunk_size,blob=file.slice(start,Math.min(start+session.chunk_size,file.size));uploadProgress(`Uploading ${file.name}`,index/session.part_count*92,`Part ${index+1} of ${session.part_count} · ${formatBytes(file.size)}`);const uploaded=await uploadPart(session,index+1,blob);parts.push({partNumber:uploaded.partNumber,etag:uploaded.etag})}uploadProgress(`Finishing ${file.name}`,96,'Validating and completing the private R2 upload');const completed=await api('/api/admin/uploads/'+session.id,{method:'POST',body:JSON.stringify({parts})});uploadProgress(`Uploaded ${file.name}`,100,'Ready to save with this movie');return{...completed,sessionId:session.id}}catch(error){newSessions=newSessions.filter(item=>item.id!==session.id);try{await api('/api/admin/uploads/'+session.id,{method:'DELETE'})}catch{}throw error}}
-async function getMovieForm(){const streamType=$('streamType').value;if($('posterFile').files[0]){await discardNewUpload(currentPosterKey);const uploaded=await uploadFile($('posterFile').files[0],'poster');currentPosterKey=uploaded.key;$('posterFile').value='';renderCurrentFile('poster')}if(streamType==='r2'&&$('videoFile').files[0]){await discardNewUpload(currentVideoKey);const uploaded=await uploadFile($('videoFile').files[0],'video');currentVideoKey=uploaded.key;$('videoFile').value='';renderCurrentFile('video')}const subtitles=[];for(const row of $('subtitleRows').children){const file=row.querySelector('.subtitle-file').files[0],external=row.querySelector('.subtitle-url').value.trim(),lang=row.querySelector('.subtitle-lang').value,label=row.querySelector('.subtitle-label').value.trim()||row.querySelector('.subtitle-lang').selectedOptions[0].text;let key=row.dataset.existingKey,url=row.dataset.existingUrl;if(file){await discardNewUpload(key);const uploaded=await uploadFile(file,'subtitle');key=uploaded.key;url='';row.dataset.existingKey=key;row.dataset.existingUrl='';row.querySelector('.subtitle-file').value=''}else if(external){key='';url=external}if(key||url)subtitles.push({id:row.dataset.trackId||crypto.randomUUID(),lang,label,...(key?{key}:{url})})}return{title:$('title').value.trim(),category:$('category').value,category_label:$('categoryLabel').value.trim()||$('category').selectedOptions[0].text,year:$('year').value?Number($('year').value):null,rating:$('rating').value.trim()||'NR',duration:$('duration').value.trim(),creator:$('creator').value.trim(),poster_url:$('poster').value.trim(),poster_key:currentPosterKey,stream_type:streamType,stream_url:['mp4','embed'].includes(streamType)?$('streamUrl').value.trim():'',video_key:streamType==='r2'?currentVideoKey:'',archive_id:streamType==='archive'?$('archiveId').value.trim():'',synopsis:$('synopsis').value.trim(),subtitles,featured:$('featured').checked,rights_verified:$('rights').checked,published:$('published').checked}}
-$('movieForm').addEventListener('submit',async event=>{event.preventDefault();if(saving)return;saving=true;$('saveButton').disabled=true;const wasEditing=!!editingId;try{if($('published').checked&&!$('rights').checked)throw new Error('Confirm streaming rights before publishing.');const movie=await getMovieForm();if(movie.published&&movie.stream_type==='r2'&&!movie.video_key)throw new Error('Upload a movie file before publishing this title.');uploadProgress('Saving movie',100,'Updating the D1 catalogue');const result=editingId?await api('/api/admin/movies/'+editingId,{method:'PUT',body:JSON.stringify(movie)}):await api('/api/admin/movies',{method:'POST',body:JSON.stringify(movie)});newSessions=[];resetForm(false);status(result.warning||(wasEditing?'Movie updated. The public catalog has been refreshed.':'Movie saved. It is now in your catalogue.'),!!result.warning);await loadMovies();showToast(wasEditing?'Movie updated successfully.':'Movie saved successfully.')}catch(error){status(error.message,true);$('uploadProgress').classList.add('hidden')}finally{saving=false;$('saveButton').disabled=false}});
-async function cleanupNewSessions(){const sessions=[...newSessions];newSessions=[];for(const session of sessions)try{await api('/api/admin/uploads/'+session.id,{method:'DELETE'})}catch{}}
-function resetForm(cleanup=true){if(cleanup)cleanupNewSessions();editingId=null;currentPosterKey='';currentVideoKey='';$('movieForm').reset();$('rating').value='NR';$('subtitleRows').innerHTML='';$('formTitle').textContent='Add a movie';$('saveButton').textContent='Save movie';$('cancelButton').classList.add('hidden');$('uploadProgress').classList.add('hidden');renderCurrentFile('poster');renderCurrentFile('video');updateSourceFields()}
-$('cancelButton').onclick=()=>resetForm();$('newMovieButton').onclick=()=>{resetForm();$('editorPanel').scrollIntoView({behavior:'smooth',block:'start'});$('title').focus()};
-function updateStats(){$('totalCount').textContent=movies.length;$('publishedCount').textContent=movies.filter(m=>m.published).length;$('r2Count').textContent=movies.filter(m=>m.stream_type==='r2').length}
-function renderMovies(){const query=$('adminSearch').value.trim().toLowerCase(),items=movies.filter(m=>!query||`${m.title} ${m.category_label} ${m.year}`.toLowerCase().includes(query));$('movieList').innerHTML=items.length?items.map(m=>`<article class="movie"><div class="movie-top"><div><h3>${esc(m.title)}</h3><p class="movie-meta">${esc(m.category_label||m.category)} · ${esc(m.year||'No year')}<br>${m.stream_type==='r2'?'Private R2 video':esc(m.stream_type)}</p></div></div><div class="movie-badges"><span class="badge ${m.published?'live':''}">${m.published?'Published':'Draft'}</span><span class="badge">${m.rights_verified?'Rights verified':'Rights unverified'}</span>${m.subtitles?.length?`<span class="badge">${m.subtitles.length} subtitle${m.subtitles.length===1?'':'s'}</span>`:''}</div><div class="movie-actions"><button type="button" data-edit="${esc(m.id)}">Edit</button><button type="button" data-publish="${esc(m.id)}">${m.published?'Unpublish':'Publish'}</button><button type="button" class="delete" data-delete="${esc(m.id)}">Delete</button></div></article>`).join(''):'<p class="empty">No saved titles match this view. Add a movie or clear the filter.</p>';updateStats()}
-async function loadMovies(){try{const data=await api('/api/admin/movies');movies=data.movies||[];renderMovies()}catch(error){status(error.message+' Try signing in again.',true)}}
-function editMovie(movie){resetForm();editingId=movie.id;currentPosterKey=movie.poster_key||'';currentVideoKey=movie.video_key||'';$('title').value=movie.title||'';$('category').value=movie.category||'open';$('categoryLabel').value=movie.category_label||'';$('year').value=movie.year||'';$('rating').value=movie.rating||'NR';$('duration').value=movie.duration||'';$('creator').value=movie.creator||'';$('poster').value=movie.poster_url||'';$('streamType').value=movie.stream_type||'not-configured';$('streamUrl').value=movie.stream_url||'';$('archiveId').value=movie.archive_id||'';$('synopsis').value=movie.synopsis||'';(movie.subtitles||[]).forEach(addSubtitleRow);$('featured').checked=!!movie.featured;$('rights').checked=!!movie.rights_verified;$('published').checked=!!movie.published;$('formTitle').textContent='Edit movie';$('saveButton').textContent='Update movie';$('cancelButton').classList.remove('hidden');renderCurrentFile('poster');renderCurrentFile('video');updateSourceFields();$('editorPanel').scrollIntoView({behavior:'smooth',block:'start'})}
-$('movieList').addEventListener('click',async event=>{const edit=event.target.closest('[data-edit]'),del=event.target.closest('[data-delete]'),publish=event.target.closest('[data-publish]');if(edit){const movie=movies.find(item=>item.id===edit.dataset.edit);if(movie)editMovie(movie)}if(publish){const movie=movies.find(item=>item.id===publish.dataset.publish);if(!movie)return;try{publish.disabled=true;const result=await api('/api/admin/movies/'+movie.id,{method:'PUT',body:JSON.stringify({...movie,published:!movie.published})});status(result.warning||(movie.published?'Movie unpublished.':'Movie published.'),!!result.warning);await loadMovies()}catch(error){status(error.message,true);publish.disabled=false}}if(del){const movie=movies.find(item=>item.id===del.dataset.delete);if(!movie||!confirm(`Delete “${movie.title}” and its uploaded R2 media permanently?`))return;try{del.disabled=true;const result=await api('/api/admin/movies/'+movie.id,{method:'DELETE'});if(editingId===movie.id)resetForm(false);status(result.warning||'Movie and associated uploaded media deleted.',!!result.warning);await loadMovies()}catch(error){status(error.message,true);del.disabled=false}}});
-$('adminSearch').addEventListener('input',renderMovies);$('refreshButton').onclick=loadMovies;$('logoutButton').onclick=async()=>{await cleanupNewSessions();try{await api('/api/admin/logout',{method:'POST'})}catch{}showLogin();resetForm(false)};
-async function loadAds(){try{const data=await api('/api/admin/ads');$('publisherId').value=data.publisher_id||'';$('homeSlot').value=data.home_slot||'';$('playerSlot').value=data.player_slot||'';$('adsEnabled').checked=!!data.enabled}catch{}}
-$('adsForm').addEventListener('submit',async event=>{event.preventDefault();try{await api('/api/admin/ads',{method:'PUT',body:JSON.stringify({publisher_id:$('publisherId').value.trim(),home_slot:$('homeSlot').value.trim(),player_slot:$('playerSlot').value.trim(),enabled:$('adsEnabled').checked})});$('adsStatus').textContent='Advertisement settings saved.';$('adsStatus').classList.remove('hidden','error')}catch(error){$('adsStatus').textContent=error.message;$('adsStatus').classList.remove('hidden');$('adsStatus').classList.add('error')}});
-checkSession();
+:root {
+  --bg: #090b10;
+  --bg-soft: #10161d;
+  --panel: rgba(17, 20, 25, 0.96);
+  --panel-strong: #141a20;
+  --panel-alt: #1a2129;
+  --line: rgba(255,255,255,0.08);
+  --line-strong: rgba(255,255,255,0.18);
+  --text: #f4f7fb;
+  --muted: rgba(244,247,251,0.72);
+  --accent: #ff5d5d;
+  --accent-soft: rgba(255, 93, 93, 0.12);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+html { font-family: 'Urbanist', Arial, sans-serif; background: var(--bg); color: var(--text); }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 93, 93, 0.12), transparent 30%),
+    linear-gradient(180deg, #090b10 0%, #111820 100%);
+  color: var(--text);
+  min-height: 100vh;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+input, textarea, select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  padding: 0.82rem 0.9rem;
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(255, 93, 93, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 93, 93, 0.12);
+}
+textarea { resize: vertical; }
+
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.auth-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.auth-card {
+  width: min(440px, 100%);
+  background: rgba(18, 22, 30, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+}
+.eyebrow {
+  margin: 0 0 0.6rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.auth-card h1 {
+  margin: 0 0 8px;
+  font-family: 'Oswald', Arial, sans-serif;
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  letter-spacing: 0.04em;
+}
+.muted {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+.auth-card input {
+  margin-bottom: 12px;
+}
+.primary-btn, .ghost-btn, .upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  font-weight: 700;
+}
+.primary-btn {
+  background: linear-gradient(135deg, #ff5d5d, #ff8a5b);
+  color: #130d0d;
+  box-shadow: 0 10px 22px rgba(255, 93, 93, 0.25);
+}
+.ghost-btn, .upload-btn {
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  border-color: var(--line);
+}
+.primary-btn:hover, .ghost-btn:hover, .upload-btn:hover { transform: translateY(-1px); }
+.status-text { min-height: 1.2em; margin: 12px 0 0; color: #ffd3d3; }
+
+.admin-shell {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 18px 20px 40px;
+}
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 8px 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.brand-block {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  font-family: 'Oswald', Arial, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.brand-mark {
+  font-size: clamp(1.3rem, 2vw, 2rem);
+  font-weight: 700;
+}
+.brand-sub {
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-nav a {
+  color: var(--text);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.admin-main {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 22px;
+}
+.sidebar, .content-panel, .catalog-panel {
+  background: rgba(17, 20, 25, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+.sidebar {
+  padding: 18px;
+}
+.stats-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.stat-grid div {
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 12px 10px;
+}
+.stat-grid strong {
+  display: block;
+  font-size: 1.45rem;
+  margin-bottom: 4px;
+}
+.stat-grid span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.sidebar-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.upload-btn {
+  width: 100%;
+  display: inline-flex;
+}
+
+.content-panel {
+  padding: 20px 20px 24px;
+}
+.panel-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.panel-header h2, .catalog-toolbar h3 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2vw, 2.25rem);
+}
+.catalog-form {
+  display: grid;
+  gap: 18px;
+}
+.field-grid {
+  display: grid;
+  gap: 16px;
+}
+.two-up { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.three-up { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.four-up { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.catalog-form label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.catalog-form label span {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.toggle-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 50px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  padding: 0 14px;
+}
+.toggle-box input {
+  width: 18px; height: 18px; accent-color: var(--accent); }
+.toggle-box span { color: var(--text); font-weight: 600; }
+.form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.catalog-panel {
+  margin-top: 24px;
+  padding: 20px;
+}
+.catalog-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.toolbar-tools {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.toolbar-tools input, .toolbar-tools select {
+  min-width: 180px;
+}
+.catalog-list {
+  display: grid;
+  gap: 12px;
+}
+.catalog-item {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+}
+.catalog-item img {
+  width: 96px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  border: 1px solid var(--line);
+}
+.catalog-item-info {
+  min-width: 0;
+}
+.catalog-item-info h4 {
+  margin: 0 0 6px;
+  font-size: 1.06rem;
+}
+.catalog-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.catalog-item-meta span {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 8px;
+}
+.catalog-item-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.catalog-item-actions button {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  padding: 0.55rem 0.8rem;
+}
+.catalog-item-actions .danger-btn {
+  border-color: rgba(255, 93, 93, 0.45);
+  color: #ffd4d4;
+}
+
+@media (max-width: 980px) {
+  .admin-main { grid-template-columns: 1fr; }
+  .sidebar { order: 2; }
+  .content-panel { order: 1; }
+  .three-up, .four-up { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .two-up, .three-up, .four-up { grid-template-columns: 1fr; }
+  .catalog-toolbar, .panel-header { flex-direction: column; align-items: stretch; }
+  .catalog-item { grid-template-columns: 84px minmax(0, 1fr); }
+  .catalog-item-actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .admin-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
