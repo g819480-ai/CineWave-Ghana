@@ -1,91 +1,252 @@
-<script src="/license_catalog.js"></script>!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0a0a0c">
+
   <title>NOCTURA | Movie Catalogue</title>
+  <meta name="description" content="Discover movies and explore the NOCTURA movie catalogue.">
+
   <link rel="stylesheet" href="/css/main.css">
 </head>
+
 <body>
+
+  <!-- NAVIGATION -->
   <header class="navbar" id="navbar">
     <a href="/index.html" class="brand-logo">NOCTURA</a>
+
     <ul class="nav-links">
-      <li><a href="/index.html" class="nav-link active">Home</a></li>
-      <li><a href="#catalogueHeading" class="nav-link">Movies</a></li>
-      <li><a href="#ghanaianRow" class="nav-link">Featured</a></li>
-      <li><a href="#watchlist-section" class="nav-link">My List</a></li>
+      <li>
+        <a href="/index.html" class="nav-link active">Home</a>
+      </li>
+      <li>
+        <a href="#catalogueHeading" class="nav-link">Movies</a>
+      </li>
+      <li>
+        <a href="#ghanaianRow" class="nav-link">Featured</a>
+      </li>
+      <li>
+        <a href="#watchlist-section" class="nav-link">My List</a>
+      </li>
     </ul>
+
     <div class="nav-actions">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="search" id="searchInput" class="search-input" placeholder="Titles, actors, genres..." autocomplete="off">
-        <div id="searchResults" class="search-results-dropdown"></div>
+
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="Titles, actors, genres..."
+          autocomplete="off"
+        >
+
+        <div
+          id="searchResults"
+          class="search-results-dropdown"
+        ></div>
       </div>
-      <a href="/admin.html" class="nav-link" title="Admin CMS" aria-label="Admin settings">⚙️</a>
+
+      <a
+        href="/admin.html"
+        class="nav-link"
+        title="Admin CMS"
+        aria-label="Admin settings"
+      >⚙️</a>
     </div>
   </header>
 
+
+  <!-- HERO / FEATURED MOVIE -->
   <section class="hero" id="heroBillboard">
+
     <div class="hero-overlay"></div>
+
     <div class="hero-content">
-      <span class="hero-badge" id="heroBadge">Featured Premiere</span>
-      <h1 class="hero-title" id="heroTitle">Loading catalogue…</h1>
+
+      <span class="hero-badge" id="heroBadge">
+        Featured Premiere
+      </span>
+
+      <h1 class="hero-title" id="heroTitle">
+        Loading catalogue…
+      </h1>
+
       <div class="hero-meta" id="heroMeta">
-        <span id="heroYear">—</span><span id="heroRating">—</span><span id="heroDuration">—</span>
+        <span id="heroYear">—</span>
+        <span id="heroRating">—</span>
+        <span id="heroDuration">—</span>
       </div>
-      <p class="hero-desc" id="heroDesc">Loading movie information…</p>
+
+      <p class="hero-desc" id="heroDesc">
+        Loading movie information…
+      </p>
+
       <div class="hero-buttons">
-        <a href="#" id="heroPlayBtn" class="btn btn-primary">▶ Play Now</a>
-        <button id="heroDetailsBtn" class="btn btn-secondary" type="button">ℹ More Info</button>
+
+        <a
+          href="#"
+          id="heroPlayBtn"
+          class="btn btn-primary"
+        >
+          ▶ Play Now
+        </a>
+
+        <button
+          id="heroDetailsBtn"
+          class="btn btn-secondary"
+          type="button"
+        >
+          ℹ More Info
+        </button>
+
       </div>
     </div>
   </section>
 
+
+  <!-- MOVIE FILTERS -->
   <div class="filter-bar">
-    <select id="filterIndustry" class="filter-select" onchange="applyFilters()">
+
+    <select
+      id="filterIndustry"
+      class="filter-select"
+      onchange="applyFilters()"
+    >
       <option value="all">All Industries</option>
       <option value="Ghanaian Cinema">Ghanaian & Kumawood</option>
       <option value="Nollywood">Nollywood</option>
       <option value="Hollywood">Hollywood</option>
       <option value="K-Drama">Korean Drama</option>
     </select>
-    <select id="filterGenre" class="filter-select" onchange="applyFilters()">
+
+    <select
+      id="filterGenre"
+      class="filter-select"
+      onchange="applyFilters()"
+    >
       <option value="all">All Genres</option>
-      <option value="Drama">Drama</option><option value="Comedy">Comedy</option>
-      <option value="Romance">Romance</option><option value="Action">Action</option>
-      <option value="Sci-Fi">Sci-Fi</option><option value="Fantasy">Fantasy</option>
-      <option value="Adventure">Adventure</option><option value="Horror">Horror</option>
+      <option value="Drama">Drama</option>
+      <option value="Comedy">Comedy</option>
+      <option value="Romance">Romance</option>
+      <option value="Action">Action</option>
+      <option value="Sci-Fi">Sci-Fi</option>
+      <option value="Fantasy">Fantasy</option>
+      <option value="Adventure">Adventure</option>
+      <option value="Horror">Horror</option>
     </select>
+
   </div>
 
-  <section class="catalog-section" id="watchlist-section" style="display:none">
-    <div class="section-title">My List</div><div class="media-row" id="watchlistRow"></div>
-  </section>
-  <section class="catalog-section">
-    <div class="section-title">Featured Cinema</div><div class="media-row" id="ghanaianRow"></div>
-  </section>
-  <section class="catalog-section">
-    <div class="section-title" id="catalogueHeading">Trending Releases</div><div class="media-row" id="generalRow"></div>
+
+  <!-- MY WATCHLIST -->
+  <section
+    class="catalog-section"
+    id="watchlist-section"
+    style="display:none"
+  >
+    <div class="section-title">
+      My List
+    </div>
+
+    <div
+      class="media-row"
+      id="watchlistRow"
+    ></div>
   </section>
 
-  <div class="modal-backdrop" id="infoModal" onclick="if(event.target===this)closeModal()">
+
+  <!-- FEATURED MOVIES -->
+  <section class="catalog-section">
+
+    <div class="section-title">
+      Featured Cinema
+    </div>
+
+    <div
+      class="media-row"
+      id="ghanaianRow"
+    ></div>
+
+  </section>
+
+
+  <!-- MAIN MOVIE CATALOGUE -->
+  <section class="catalog-section">
+
+    <div
+      class="section-title"
+      id="catalogueHeading"
+    >
+      Trending Releases
+    </div>
+
+    <div
+      class="media-row"
+      id="generalRow"
+    ></div>
+
+  </section>
+
+
+  <!-- MOVIE INFORMATION MODAL -->
+  <div
+    class="modal-backdrop"
+    id="infoModal"
+    onclick="if(event.target === this) closeModal()"
+  >
+
     <div class="modal-body">
-      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
-      <div id="modalContent" style="padding:24px"></div>
+
+      <button
+        class="modal-close"
+        onclick="closeModal()"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+
+      <div
+        id="modalContent"
+        style="padding:24px"
+      ></div>
+
     </div>
   </div>
 
+
+  <!-- FOOTER -->
   <footer>
+
     <div class="footer-links">
-      <a href="/legal.html#dmca">DMCA & Copyright</a>
-      <a href="/legal.html#terms">Terms of Service</a>
-      <a href="/legal.html#privacy">Privacy Policy</a>
+
+      <a href="/legal.html#dmca">
+        DMCA & Copyright
+      </a>
+
+      <a href="/legal.html#terms">
+        Terms of Service
+      </a>
+
+      <a href="/legal.html#privacy">
+        Privacy Policy
+      </a>
+
     </div>
-    <p>&copy; 2026 NOCTURA. Movie catalogue.</p>
+
+    <p>
+      &copy; 2026 NOCTURA. Movie catalogue.
+    </p>
+
   </footer>
 
-  <script src="/licensed_catalog.js"></script>
+
+  <!-- IMPORTANT: LOAD THE CATALOGUE BEFORE THE WEBSITE SCRIPT -->
+  <script src="/license_catalog.js"></script>
   <script src="/site.js"></script>
+
 </body>
 </html>
