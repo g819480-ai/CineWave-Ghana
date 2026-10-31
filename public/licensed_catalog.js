@@ -197,8 +197,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'new',
     enabled: true,
     licenceUrl: 'https://archive.org/details/Chunhyangjeon1935',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
-  }
-];
+    commercialUse: 'Yes — public domain in the United States and ];
 
+window.NOCTURA_MOVIE_CATALOG = NOCTURA_MOVIE_CATALOG;
 const DEFAULT_FILMS = NOCTURA_MOVIE_CATALOG.filter(item => item.enabled);
