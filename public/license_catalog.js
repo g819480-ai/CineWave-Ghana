@@ -1,4 +1,6 @@
-const NOCTURA_MOVIE_CATALOG = [
+/* NOCTURA GHANA - MOVIE CATALOGUE */
+
+window.NOCTURA_MOVIE_CATALOG = [
   {
     title: 'The General',
     category: 'hollywood',
@@ -8,7 +10,7 @@ const NOCTURA_MOVIE_CATALOG = [
     featured: true,
     poster: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/The_General_%281926%29_poster.jpg/800px-The_General_%281926%29_poster.jpg',
     backdrop: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/The_General_%281926%29_poster.jpg/800px-The_General_%281926%29_poster.jpg',
-    description: 'A railroad engineer chases a pair of train thieves in one of cinema\'s greatest silent comedies.',
+    description: "A railroad engineer chases a pair of train thieves in one of cinema's greatest silent comedies.",
     rating: 'G',
     certificate: 'G',
     language: 'English',
@@ -17,7 +19,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'featured',
     enabled: true,
     licenceUrl: 'https://archive.org/details/TheGeneral',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'Safety Last!',
@@ -37,7 +39,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'featured',
     enabled: true,
     licenceUrl: 'https://archive.org/details/SafetyLast',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'The Gold Rush',
@@ -48,7 +50,7 @@ const NOCTURA_MOVIE_CATALOG = [
     featured: false,
     poster: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/The_Gold_Rush_poster.jpg/800px-The_Gold_Rush_poster.jpg',
     backdrop: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/The_Gold_Rush_poster.jpg/800px-The_Gold_Rush_poster.jpg',
-    description: 'Charlie Chaplin\'s classic tale of survival, hardship, and hope in the frozen wilderness of the Yukon.',
+    description: "Charlie Chaplin's classic tale of survival, hardship, and hope in the frozen wilderness of the Yukon.",
     rating: 'G',
     certificate: 'G',
     language: 'English',
@@ -57,7 +59,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'trending',
     enabled: true,
     licenceUrl: 'https://archive.org/details/TheGoldRush',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'Metropolis',
@@ -68,7 +70,7 @@ const NOCTURA_MOVIE_CATALOG = [
     featured: true,
     poster: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Metropolis_1927_poster.jpg/800px-Metropolis_1927_poster.jpg',
     backdrop: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Metropolis_1927_poster.jpg/800px-Metropolis_1927_poster.jpg',
-    description: 'A visionary cityscape of class conflict, machinery, and rebellion in one of cinema\'s most influential dystopian films.',
+    description: "A visionary cityscape of class conflict, machinery, and rebellion in one of cinema's most influential dystopian films.",
     rating: 'G',
     certificate: 'G',
     language: 'German',
@@ -77,7 +79,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'trending',
     enabled: true,
     licenceUrl: 'https://archive.org/details/Metropolis_201703',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'Nosferatu',
@@ -97,7 +99,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'new',
     enabled: true,
     licenceUrl: 'https://archive.org/details/Nosferatu1922',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'The Adventures of Prince Achmed',
@@ -117,7 +119,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'new',
     enabled: true,
     licenceUrl: 'https://archive.org/details/PrinceAchmed',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'The Kid',
@@ -128,7 +130,7 @@ const NOCTURA_MOVIE_CATALOG = [
     featured: false,
     poster: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/The_Kid_poster.jpg/800px-The_Kid_poster.jpg',
     backdrop: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/The_Kid_poster.jpg/800px-The_Kid_poster.jpg',
-    description: 'A tramp and a little boy forge an unforgettable bond in Chaplin\'s most beloved sentimental comedy-drama.',
+    description: "A tramp and a little boy forge an unforgettable bond in Chaplin's most beloved sentimental comedy-drama.",
     rating: 'G',
     certificate: 'G',
     language: 'English',
@@ -137,7 +139,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'featured',
     enabled: true,
     licenceUrl: 'https://archive.org/details/TheKid1921',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'The Passion of Joan of Arc',
@@ -157,7 +159,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'trending',
     enabled: true,
     licenceUrl: 'https://archive.org/details/JoanOfArc1928',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'Pundalik',
@@ -177,7 +179,7 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'new',
     enabled: true,
     licenceUrl: 'https://archive.org/details/Pundalik_1927',
-    commercialUse: 'Yes — public domain in the United States and many territories.'
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
   },
   {
     title: 'Chunhyangjeon',
@@ -197,7 +199,11 @@ const NOCTURA_MOVIE_CATALOG = [
     status: 'new',
     enabled: true,
     licenceUrl: 'https://archive.org/details/Chunhyangjeon1935',
-    commercialUse: 'Yes — public domain in the United States and ];
+    commercialUse: 'Check the exact print, restoration, territory and commercial-use rights before streaming.'
+  }
+];
 
-window.NOCTURA_MOVIE_CATALOG = NOCTURA_MOVIE_CATALOG;
-const DEFAULT_FILMS = NOCTURA_MOVIE_CATALOG.filter(item => item.enabled);
+/* Backward-compatible alias for code expecting DEFAULT_FILMS. */
+window.DEFAULT_FILMS = window.NOCTURA_MOVIE_CATALOG.filter(
+  movie => movie.enabled !== false
+);
