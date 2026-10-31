@@ -1,0 +1,20 @@
+WORKER.JS INTEGRATION
+
+1) Add this import at the very top of worker.js:
+
+import { handlePlexRequest } from "./plex.js";
+
+2) Find the existing line inside the export default fetch handler:
+
+const response = url.pathname.startsWith("/api/") ? await handle(req, env) : env.ASSETS ? await env.ASSETS.fetch(req) : new Response("CineWave assets binding missing", { status: 503 });
+
+Replace it with:
+
+const plexResponse = await handlePlexRequest(req, env);
+const response = plexResponse || (url.pathname.startsWith("/api/") ? await handle(req, env) : env.ASSETS ? await env.ASSETS.fetch(req) : new Response("CineWave assets binding missing", { status: 503 }));
+
+Keep the existing response-header code after this line unchanged.
+
+3) Put plex.js in the same root folder as worker.js.
+
+4) Deploy the Worker after configuring the Plex variables below.
