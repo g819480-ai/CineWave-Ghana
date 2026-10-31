@@ -1,55 +1,29 @@
-# NOCTURA
+# NOCTURA homepage loading repair
 
-A premium, mobile-friendly movie-streaming front-end prototype built for GitHub and Cloudflare Pages deployment.
+This is a focused frontend patch for the current repository layout.
 
-## What is included
-- Cinematic Netflix-inspired landing page with premium black + crimson aesthetic
-- Category navigation for Home, Movies, Ghanaian Films, Nollywood, Hollywood, Bollywood, Korean Dramas, and My List
-- Search, category filters, hero banner, and premium movie card layout
-- Movie details modal and HTML5 video player with subtitle track demo
-- Supporting pages for About, Contact, Privacy Policy, Terms, and Account
-- Sample catalogue data clearly marked as examples until verified licensing is confirmed
+## What was wrong
 
-## Local development
-```bash
-cd /path/to/project
-python3 -m http.server 8080
-```
+- `public/index.html` loaded `public/site.js` as a JavaScript file.
+- The repository's `public/site.js` currently contains CSS, not JavaScript.
+- The homepage therefore cannot run the code that fills the featured title and renders the catalogue.
 
-Then open:
-- http://localhost:8080/index.html
+## Apply these files
 
-## Files to review
-- `public/index.html` — homepage and primary UI
-- `public/site.js` — catalog data, filters, list management, modal, and player interactions
-- `public/styles.css` — design system and responsive layout
-- `public/about.html` — brand overview page
-- `public/contact.html` — contact form shell
-- `public/privacy.html` — privacy policy page
-- `public/terms.html` — terms page
-- `public/account.html` — account flow shell
-- `public/sample.vtt` — sample subtitle file for the player demo
+Replace these two files in the GitHub repository:
 
-## Deployment notes
-This project is designed as a static front-end prototype for Cloudflare Pages. It does not bundle an authenticated backend, real billing, or licensed media storage. Before production launch, connect a secure backend with:
-- verified movie metadata and licenses
-- a real authentication provider for account access
-- approved storage for video, posters, and subtitles
-- Cloudflare R2 or an equivalent authorized provider for large media files
-- environment variables for secrets and API keys
+1. `public/index.html`
+2. `public/site.js`
 
-## Legal and compliance checklist
-- Do not publish unverified titles or copyright-protected streams
-- Do not hardcode secrets or credentials in frontend files
-- Do not claim ad or payment approvals without an authorized provider
-- Replace sample URLs and subtitles with approved media before launch
+Keep the existing:
+- `public/css/main.css`
+- `public/licensed_catalog.js`
+- `worker.js`
+- `wrangler.toml`
+- D1 database and R2 bucket configuration
 
-## Testing checklist
-- Open the homepage on desktop and mobile viewport widths
-- Confirm the search and category filters work
-- Open a details modal and play the sample video
-- Verify the subtitle track loads in the player
-- Check My List interactions and continue-watching state in localStorage
+Commit the changes, then let Cloudflare Pages/Workers deploy the updated project.
 
-## Important
-This is a front-end prototype and not a live, licensed streaming platform. It is ready for design review and pre-launch testing, but production deployment requires legal rights review and a secure backend.
+## Important playback note
+
+This patch makes the existing local catalogue render and stops the permanent loading state. It does not create movie streams. Existing catalogue entries need a real, authorized video source before their Play buttons can work. The UI deliberately labels titles without a stream source as playback unavailable instead of pretending they can play.
